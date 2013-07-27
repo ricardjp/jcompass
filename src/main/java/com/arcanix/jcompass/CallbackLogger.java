@@ -11,11 +11,13 @@ import java.io.File;
  */
 public final class CallbackLogger {
 
-    private final Logger logger;
+    private static final Logger LOGGER = LoggerFactory.getLogger(CallbackLogger.class);
+
     private final File configFileDirectory;
 
-    public CallbackLogger(Logger logger, File configFile) {
-        this.logger = logger;
+    private boolean loggedError = false;
+
+    public CallbackLogger(File configFile) {
         this.configFileDirectory = configFile.getParentFile();
     }
 
@@ -28,15 +30,20 @@ public final class CallbackLogger {
     }
 
     public void onStylesheetSaved(String filename) {
-        this.logger.info("  - File: " + getNormalizedFilename(filename) + " successfully updated");
+        LOGGER.info("  - File: " + getNormalizedFilename(filename) + " successfully updated");
     }
 
     public void onSpriteSaved(String filename) {
-        this.logger.info("  - Sprite: " + getNormalizedFilename(filename) + " successfully updated");
+        LOGGER.info("  - Sprite: " + getNormalizedFilename(filename) + " successfully updated");
     }
 
     public void onStylesheetError(String filename, String message) {
-        this.logger.error("  - An error occured while updating file: " + getNormalizedFilename(filename) + ": " + message);
+        LOGGER.error("  - An error occured while updating file: " + getNormalizedFilename(filename) + ": " + message);
+        this.loggedError = true;
+    }
+
+    public boolean hasLoggedError() {
+        return this.loggedError;
     }
 
 }
