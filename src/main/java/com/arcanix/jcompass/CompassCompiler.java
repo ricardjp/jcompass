@@ -1,8 +1,6 @@
 package com.arcanix.jcompass;
 
-import org.jruby.embed.EmbedEvalUnit;
 import org.jruby.embed.LocalContextScope;
-import org.jruby.embed.LocalVariableBehavior;
 import org.jruby.embed.ScriptingContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,12 +23,16 @@ public final class CompassCompiler {
         this.configFile = configFile;
     }
 
-    public void compile() throws IOException, CompassCompilerException {
-        LOGGER.info("Updating stylesheets...");
+    public File getConfigFile() {
+        return this.configFile;
+    }
 
+    public void compile() throws IOException, CompassCompilerException {
         if (!this.configFile.exists()) {
             throw new FileNotFoundException("Configuration file does not exist");
         }
+
+        LOGGER.info("Updating stylesheets...");
 
         ScriptingContainer scriptingContainer = null;
         try {
