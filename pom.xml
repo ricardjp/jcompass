@@ -37,18 +37,6 @@
             <version>1.7.5</version>
         </dependency>
 
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <version>1.0.13</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>jcl-over-slf4j</artifactId>
-            <version>1.7.5</version>
-        </dependency>
-
     </dependencies>
 
     <build>
@@ -73,33 +61,6 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>
-
-            <!--This plugin's configuration is used to store Eclipse m2e settings only. -->
-            <!-- It has no influence on the Maven build itself.-->
-            <plugin>
-                <groupId>org.eclipse.m2e</groupId>
-                <artifactId>lifecycle-mapping</artifactId>
-                <version>1.0.0</version>
-                <configuration>
-                    <lifecycleMappingMetadata>
-                        <pluginExecutions>
-                            <pluginExecution>
-                                <pluginExecutionFilter>
-                                    <groupId>de.saumya.mojo</groupId>
-                                    <artifactId>gem-maven-plugin</artifactId>
-                                    <versionRange>[0.29.4,)</versionRange>
-                                    <goals>
-                                        <goal>initialize</goal>
-                                    </goals>
-                                </pluginExecutionFilter>
-                                <action>
-                                    <ignore />
-                                </action>
-                            </pluginExecution>
-                        </pluginExecutions>
-                    </lifecycleMappingMetadata>
-                </configuration>
             </plugin>
         </plugins>
     </build>
