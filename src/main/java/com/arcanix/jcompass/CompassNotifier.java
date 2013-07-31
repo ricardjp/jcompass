@@ -11,6 +11,12 @@ public interface CompassNotifier {
 
     void onCompilationEnded();
 
+    void onFileChanged(File file);
+
+    void onFileCreated(File file);
+
+    void onFileDeleted(File file);
+
     void onStylesheetSaved(File file);
 
     void onSpriteSaved(File file);

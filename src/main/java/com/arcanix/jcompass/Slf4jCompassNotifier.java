@@ -22,6 +22,21 @@ public final class Slf4jCompassNotifier implements CompassNotifier {
         LOGGER.info("Done updating stylesheets");
     }
 
+    @Override
+    public void onFileChanged(File file) {
+        LOGGER.info("File change detected to: " + file.getAbsolutePath());
+    }
+
+    @Override
+    public void onFileCreated(File file) {
+        LOGGER.info("File creation detected: " + file.getAbsolutePath());
+    }
+
+    @Override
+    public void onFileDeleted(File file) {
+        LOGGER.info("File deletion detected to: " + file.getAbsolutePath());
+    }
+
     public void onStylesheetSaved(File file) {
         LOGGER.info("  - File: " + file.getAbsolutePath() + " successfully updated");
     }

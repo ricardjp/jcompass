@@ -32,6 +32,10 @@ public final class CompassCompiler {
         return this.configFile;
     }
 
+    public CompassNotifier getCompassNotifier() {
+        return this.compassNotifier;
+    }
+
     public void compile() throws IOException, CompassCompilerException {
         if (!this.configFile.exists()) {
             throw new FileNotFoundException("Configuration file does not exist");

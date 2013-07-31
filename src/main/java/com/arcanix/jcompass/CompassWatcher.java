@@ -5,17 +5,11 @@ import org.apache.commons.vfs2.FileSystemException;
 import org.apache.commons.vfs2.FileSystemManager;
 import org.apache.commons.vfs2.VFS;
 import org.apache.commons.vfs2.impl.DefaultFileMonitor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.File;
 
 /**
  * @author ricardjp@arcanix.com (Jean-Philippe Ricard)
  */
 public final class CompassWatcher {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(CompassWatcher.class);
 
     private final CompassCompiler compassCompiler;
 
@@ -27,8 +21,6 @@ public final class CompassWatcher {
     }
 
     public void watch() throws FileSystemException {
-
-        LOGGER.info("Lauching compass watcher...");
         FileSystemManager manager = VFS.getManager();
         FileObject file = manager.resolveFile(
                 this.compassCompiler.getConfigFile().getParentFile().getAbsolutePath());
