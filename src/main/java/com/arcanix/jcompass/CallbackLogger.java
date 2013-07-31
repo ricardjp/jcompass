@@ -1,9 +1,5 @@
 package com.arcanix.jcompass;
 
-import org.jruby.RubyObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.File;
 
 /**
@@ -11,35 +7,35 @@ import java.io.File;
  */
 public final class CallbackLogger {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(CallbackLogger.class);
-
     private final File configFileDirectory;
+    private final CompassNotifier compassNotifier;
 
     private boolean loggedError = false;
 
-    public CallbackLogger(File configFile) {
+    public CallbackLogger(File configFile, CompassNotifier compassNotifier) {
         this.configFileDirectory = configFile.getParentFile();
+        this.compassNotifier = compassNotifier;
     }
 
-    private String getNormalizedFilename(String filename) {
+    private File getNormalizedFile(String filename) {
         String normalizedFilename = filename;
         if (filename.startsWith("./")) {
             normalizedFilename = filename.substring(2);
         }
-        return new File(this.configFileDirectory, normalizedFilename).getAbsolutePath();
+        return new File(this.configFileDirectory, normalizedFilename);
     }
 
     public void onStylesheetSaved(String filename) {
-        LOGGER.info("  - File: " + getNormalizedFilename(filename) + " successfully updated");
+        this.compassNotifier.onStylesheetSaved(getNormalizedFile(filename));
     }
 
     public void onSpriteSaved(String filename) {
-        LOGGER.info("  - Sprite: " + getNormalizedFilename(filename) + " successfully updated");
+        this.compassNotifier.onSpriteSaved(getNormalizedFile(filename));
     }
 
     public void onStylesheetError(String filename, String message) {
-        LOGGER.error("  - An error occured while updating file: " + getNormalizedFilename(filename) + ": " + message);
         this.loggedError = true;
+        this.compassNotifier.onStylesheetError(getNormalizedFile(filename), message);
     }
 
     public boolean hasLoggedError() {
