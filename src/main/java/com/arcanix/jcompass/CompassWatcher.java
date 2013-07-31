@@ -40,15 +40,4 @@ public final class CompassWatcher {
         fm.start();
     }
 
-    public static void main(String[] args) throws Exception {
-        CompassWatcher watcher = new CompassWatcher(new CompassCompiler(new File(args[0])));
-        watcher.watch();
-        synchronized (watcher) {
-            watcher.wait();
-        }
-
-    }
-
-
-
 }
