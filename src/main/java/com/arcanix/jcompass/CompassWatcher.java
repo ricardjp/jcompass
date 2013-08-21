@@ -1,17 +1,13 @@
 package com.arcanix.jcompass;
 
-import org.apache.commons.vfs2.FileObject;
-import org.apache.commons.vfs2.FileSystemException;
-import org.apache.commons.vfs2.FileSystemManager;
-import org.apache.commons.vfs2.VFS;
-import org.apache.commons.vfs2.impl.DefaultFileMonitor;
-
 /**
  * @author ricardjp@arcanix.com (Jean-Philippe Ricard)
  */
 public final class CompassWatcher {
 
     private final CompassCompiler compassCompiler;
+
+    private Thread monitor;
 
     public CompassWatcher(CompassCompiler compassCompiler) {
         if (compassCompiler == null) {
@@ -20,16 +16,18 @@ public final class CompassWatcher {
         this.compassCompiler = compassCompiler;
     }
 
-    public void watch() throws FileSystemException {
-        FileSystemManager manager = VFS.getManager();
-        FileObject file = manager.resolveFile(
-                this.compassCompiler.getConfigFile().getParentFile().getAbsolutePath());
+    public void watch() {
+        this.monitor = new Thread(new RecusiveDirectoryWatcher(
+                this.compassCompiler.getConfigFile().getParentFile().toPath(),
+                new CompassWatchListener(this.compassCompiler),
+                true));
+        this.monitor.start();
+    }
 
-        DefaultFileMonitor fm = new DefaultFileMonitor(new CompassWatchListener(this.compassCompiler));
-        fm.setRecursive(true);
-        fm.setDelay(2000);
-        fm.addFile(file);
-        fm.start();
+    public void stop() {
+        if (this.monitor != null) {
+            this.monitor.interrupt();
+        }
     }
 
 }

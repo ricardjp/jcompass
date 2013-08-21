@@ -1,7 +1,9 @@
 package com.arcanix.jcompass;
 
 import org.jruby.embed.LocalContextScope;
+import org.jruby.embed.LocalVariableBehavior;
 import org.jruby.embed.ScriptingContainer;
+import org.jruby.javasupport.JavaEmbedUtils;
 
 import java.io.*;
 
@@ -12,6 +14,9 @@ public final class CompassCompiler {
 
     private final File configFile;
     private final CompassNotifier compassNotifier;
+    private final CallbackLogger callbackLogger;
+
+    private JavaEmbedUtils.EvalUnit unit = null;
 
     public CompassCompiler(File configFile) {
         this(configFile, new Slf4jCompassNotifier());
@@ -26,6 +31,7 @@ public final class CompassCompiler {
         }
         this.configFile = configFile;
         this.compassNotifier = compassNotifier;
+        this.callbackLogger = new CallbackLogger(this.configFile, this.compassNotifier);
     }
 
     public File getConfigFile() {
@@ -36,26 +42,25 @@ public final class CompassCompiler {
         return this.compassNotifier;
     }
 
-    public void compile() throws IOException, CompassCompilerException {
-        if (!this.configFile.exists()) {
-            throw new FileNotFoundException("Configuration file does not exist");
-        }
+    public JavaEmbedUtils.EvalUnit getScript() throws FileNotFoundException {
+        if (this.unit == null) {
+            if (!this.configFile.exists()) {
+                throw new FileNotFoundException("Configuration file does not exist");
+            }
 
-        this.compassNotifier.onCompilationStarted();
-
-        ScriptingContainer scriptingContainer = null;
-        try {
-            scriptingContainer = new ScriptingContainer(LocalContextScope.THREADSAFE);
+            ScriptingContainer scriptingContainer = new ScriptingContainer(
+                    LocalContextScope.THREADSAFE,
+                    LocalVariableBehavior.PERSISTENT);
 
             StringWriter writer = new StringWriter();
             scriptingContainer.setOutput(new PrintStream(new NullOutputStream()));
 
             StringBuilder script = new StringBuilder()
-                .append("require 'rubygems'\n")
                 .append("require 'compass'\n")
                 .append("frameworks = Dir.new(Compass::Frameworks::DEFAULT_FRAMEWORKS_PATH).path\n")
                 .append("Compass::Frameworks.register_directory(File.join(frameworks, 'compass'))\n")
                 .append("Compass::Frameworks.register_directory(File.join(frameworks, 'blueprint'))\n")
+                .append("Compass.reset_configuration!\n")
                 .append("Compass.add_project_configuration configLocation\n")
 
                 // remove color codes since they cannot be proceeded correctly by IDE consoles
@@ -69,23 +74,18 @@ public final class CompassCompiler {
                 .append("  Compass.compiler.run\n")
                 .append("end\n");
 
-            // setting configLocation variable value
             scriptingContainer.put("configLocation", this.configFile.getAbsolutePath().replaceAll("\\\\", "/"));
-
-            CallbackLogger callbackLogger = new CallbackLogger(this.configFile, this.compassNotifier);
             scriptingContainer.put("callback_logger", callbackLogger);
-            scriptingContainer.runScriptlet(script.toString());
-
-            this.compassNotifier.onCompilationEnded();
-
-            if (callbackLogger.hasLoggedError()) {
-                throw new CompassCompilerException("Compilation error occurred");
-            }
-        } finally {
-            if (scriptingContainer != null) {
-                scriptingContainer.terminate();
-            }
+            this.unit = scriptingContainer.parse(script.toString());
         }
+
+        return this.unit;
+    }
+
+    public void compile() throws IOException, CompassCompilerException {
+        this.compassNotifier.onCompilationStarted();
+        this.getScript().run();
+        this.compassNotifier.onCompilationEnded();
     }
 
 }
