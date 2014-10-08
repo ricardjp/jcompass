@@ -56,9 +56,7 @@ public final class CompassCompiler {
 
             StringBuilder script = new StringBuilder()
                     .append("require 'compass'\n")
-                    .append("frameworks = Dir.new(Compass::Frameworks::DEFAULT_FRAMEWORKS_PATH).path\n")
-                    .append("Compass::Frameworks.register_directory(File.join(frameworks, 'compass'))\n")
-                    .append("Compass::Frameworks.register_directory(File.join(frameworks, 'blueprint'))\n")
+                    .append("require 'compass/sass_compiler'\n")
                     .append("Compass.reset_configuration!\n")
                     .append("Compass.add_project_configuration configLocation\n")
 
@@ -70,7 +68,7 @@ public final class CompassCompiler {
                     .append("Compass.configuration.on_stylesheet_error { |filename, message| callback_logger.onStylesheetError(filename, message) }\n")
                     .append("Compass.configuration.on_sprite_saved { |filename| callback_logger.onSpriteSaved(filename) }\n")
                     .append("Dir.chdir(File.dirname(configLocation)) do\n")
-                    .append("  Compass.compiler.run\n")
+                    .append("  Compass.sass_compiler.compile!\n")
                     .append("end\n");
 
             scriptingContainer.put("configLocation", this.configFile.getAbsolutePath().replaceAll("\\\\", "/"));

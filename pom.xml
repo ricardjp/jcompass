@@ -6,7 +6,7 @@
 
     <groupId>com.arcanix</groupId>
     <artifactId>jcompass</artifactId>
-    <version>1.2.0</version>
+    <version>1.2.1</version>
 
     <properties>
         <jruby.version>1.7.16</jruby.version>
@@ -98,6 +98,7 @@
                             <installRDoc>false</installRDoc>
                             <installRI>false</installRI>
                             <includeOpenSSL>false</includeOpenSSL>
+                            <includeRubygemsInResources>true</includeRubygemsInResources>
                             <includeRubygemsInTestResources>false</includeRubygemsInTestResources>
                             <jrubyVersion>${jruby.version}</jrubyVersion>
                         </configuration>
