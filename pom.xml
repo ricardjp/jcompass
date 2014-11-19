@@ -6,7 +6,7 @@
 
     <groupId>com.arcanix</groupId>
     <artifactId>jcompass</artifactId>
-    <version>1.2.2</version>
+    <version>1.2.3</version>
 
     <properties>
         <jruby.version>1.7.9</jruby.version>
@@ -24,6 +24,19 @@
             <groupId>rubygems</groupId>
             <artifactId>compass</artifactId>
             <version>1.0.1</version>
+            <type>gem</type>
+            <exclusions>
+                <exclusion>
+                    <groupId>rubygems</groupId>
+                    <artifactId>compass-import-once</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>rubygems</groupId>
+            <artifactId>compass-import-once</artifactId>
+            <version>1.0.5</version>
             <type>gem</type>
         </dependency>
 
