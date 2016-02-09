@@ -6,7 +6,7 @@
 
     <groupId>com.arcanix</groupId>
     <artifactId>jcompass</artifactId>
-    <version>1.2.4</version>
+    <version>1.2.5</version>
 
     <properties>
         <jruby.version>1.7.9</jruby.version>
@@ -74,6 +74,12 @@
             <artifactId>ffi</artifactId>
             <version>1.9.10</version>
             <classifier>java</classifier>
+            <type>gem</type>
+        </dependency>
+        <dependency>
+            <groupId>rubygems</groupId>
+            <artifactId>rb-inotify</artifactId>
+            <version>0.9.5</version>
             <type>gem</type>
         </dependency>
         <dependency>
